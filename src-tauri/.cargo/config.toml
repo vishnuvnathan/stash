@@ -1,0 +1,9 @@
+# Build artifacts live off C: entirely.
+#
+# Two reasons. This project sits in a OneDrive-synced folder, and OneDrive's
+# on-demand file virtualisation intermittently makes build-script OUT_DIRs
+# non-writable ("output path is not a writable directory"). And C: on this
+# machine runs with only a few GB free, which an LTO release build exhausts.
+# D: has room to spare.
+[build]
+target-dir = "D:/stash-build-target"

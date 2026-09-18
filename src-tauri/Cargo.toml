@@ -1,0 +1,100 @@
+[package]
+name = "stash"
+version = "0.1.0"
+description = "Local-only clipboard manager and notes"
+edition = "2021"
+rust-version = "1.77"
+
+[lib]
+name = "stash_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = ["tray-icon", "image-png"] }
+tauri-plugin-global-shortcut = "2"
+tauri-plugin-autostart = "2"
+tauri-plugin-dialog = "2"
+
+# Encrypted backup. Crypto is the one place this project does not hand-roll:
+# an AEAD or a KDF written here would be the weakest thing in the tree.
+# Argon2id derives the key from the passphrase, AES-256-GCM seals the archive.
+aes-gcm = "0.10"
+argon2 = "0.5"
+rand = "0.8"
+
+serde = { version = "1", features = ["derive"] }
+# `preserve_order` keeps JSON object keys in the order they were parsed. Without
+# it serde_json sorts them, so the Prettify/Minify transforms would hand back a
+# reordered config -- a silent edit to something the user is about to paste.
+serde_json = { version = "1", features = ["preserve_order"] }
+
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "time", "sync", "fs"] }
+sqlx = { version = "0.8", default-features = false, features = [
+  "runtime-tokio",
+  "sqlite",
+] }
+
+arboard = { version = "3", features = ["image-data"] }
+image = { version = "0.25", default-features = false, features = ["png", "bmp"] }
+
+uuid = { version = "1", features = ["v4"] }
+sha2 = "0.10"
+hex = "0.4"
+regex = "1"
+once_cell = "1"
+anyhow = "1"
+thiserror = "2"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+
+[target.'cfg(windows)'.dependencies]
+windows = { version = "0.61", features = [
+  "Win32_Foundation",
+  "Win32_Security_Cryptography",
+  "Win32_System_DataExchange",
+  "Win32_System_Memory",
+  "Win32_System_Threading",
+  "Win32_System_SystemInformation",
+  "Win32_UI_Input_KeyboardAndMouse",
+  "Win32_UI_WindowsAndMessaging",
+  "Win32_Graphics_Gdi",
+] }
+
+[target.'cfg(target_os = "macos")'.dependencies]
+objc2 = "0.5"
+objc2-app-kit = { version = "0.2", features = [
+  "NSPasteboard",
+  "NSWindow",
+  "NSWorkspace",
+  "NSRunningApplication",
+  "NSApplication",
+  "NSResponder",
+  "NSGraphics",
+] }
+objc2-foundation = { version = "0.2", features = ["NSString", "NSArray", "NSData"] }
+
+[target.'cfg(target_os = "linux")'.dependencies]
+x11rb = "0.13"
+
+[features]
+default = ["custom-protocol"]
+custom-protocol = ["tauri/custom-protocol"]
+
+# Debug builds of a Tauri app link every dependency, and debug symbols dominate
+# the result -- a full dev build ran this machine out of disk. Dependencies get
+# no debug info (we never step into them); our own code keeps line tables, so
+# panics still carry file and line numbers.
+[profile.dev]
+debug = "line-tables-only"
+
+[profile.dev.package."*"]
+debug = false
+
+[profile.release]
+lto = true
+opt-level = "s"
+codegen-units = 1
+strip = true

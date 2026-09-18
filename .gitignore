@@ -1,0 +1,27 @@
+# Node / frontend
+node_modules
+dist
+dist-ssr
+*.local
+
+# Rust / Tauri
+# Build artifacts live outside the repo (see .cargo/config.toml) but this is
+# kept as a fallback in case that override isn't picked up.
+src-tauri/target
+src-tauri/gen/schemas
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor / OS cruft
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+Thumbs.db
+
+# Local env and exported backups — never commit real secrets or clip history
+.env
+.env.*
+*.stashbk

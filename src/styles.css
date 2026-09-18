@@ -1,0 +1,78 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+    margin: 0;
+    background: transparent;
+    /* The panel is a keyboard surface; selecting its chrome is never wanted. */
+    user-select: none;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #2a2a31;
+    border-radius: 6px;
+    border: 3px solid transparent;
+    background-clip: content-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #3a3a44;
+    background-clip: content-box;
+  }
+}
+
+@layer components {
+  /* Markdown preview inside the note editor. Kept small and local rather than
+     pulling in a typography plugin for one view. */
+  .prose-stash :is(h1, h2, h3) {
+    font-weight: 600;
+    color: #e4e4e7;
+    margin: 0.75em 0 0.35em;
+  }
+  .prose-stash h1 { font-size: 1.25em; }
+  .prose-stash h2 { font-size: 1.1em; }
+  .prose-stash p { margin: 0.5em 0; }
+  .prose-stash :is(ul, ol) { margin: 0.5em 0; padding-left: 1.25em; }
+  .prose-stash ul { list-style: disc; }
+  .prose-stash ol { list-style: decimal; }
+  .prose-stash code {
+    font-family: theme("fontFamily.mono");
+    font-size: 0.9em;
+    background: #1d1d22;
+    padding: 0.1em 0.3em;
+    border-radius: 3px;
+  }
+  .prose-stash pre {
+    background: #1d1d22;
+    padding: 0.75em;
+    border-radius: 6px;
+    overflow-x: auto;
+  }
+  .prose-stash pre code { background: none; padding: 0; }
+  .prose-stash a { color: #7aa2f7; }
+  .prose-stash blockquote {
+    border-left: 2px solid #2a2a31;
+    padding-left: 0.75em;
+    color: #a1a1aa;
+  }
+}
+
+/* Text content must stay selectable even though the chrome is not. The base
+   rule sets `user-select: none` on the whole document, so every surface that
+   holds real content -- including the preview pane's plain-text branch and its
+   credential fields -- has to opt back in explicitly. */
+input,
+textarea,
+select,
+pre,
+.prose-stash,
+.select-text {
+  user-select: text;
+}
