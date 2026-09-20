@@ -10,10 +10,11 @@ notes, and the window behaviour that makes it usable from the keyboard.
 
 ![Stash panel demo](docs/media/demo.gif)
 
-Opening the panel (`Ctrl+Shift+V`), browsing a stored credential, a plain-text
-clip, and a code snippet. A longer screen recording is at
-[docs/media/demo.mp4](docs/media/demo.mp4). Data shown is seeded demo content,
-not a real clipboard history.
+Arrowing through a stored credential, a note, a link and two code snippets;
+`Ctrl+T` on a JSON clip for the "paste as" menu; then the search box, first with
+the `type:code` operator and then as a plain prefix search. The same recording at
+full resolution is at [docs/media/demo.mp4](docs/media/demo.mp4). Data shown is
+seeded demo content, not a real clipboard history.
 
 ## Building
 
